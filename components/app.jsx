@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var mainElement = document.findById('main-container');
+var mainElement = document.getElementById('main-container');
 
 var Home = React.createClass({
     render() {
