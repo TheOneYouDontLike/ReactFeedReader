@@ -1,7 +1,7 @@
 'use strict';
 
-var express              = require('express'),
-    bodyParser           = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 
 var app = express(),
     port = 2222;
@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 // VIEWS
 app.use(express.static('public'));
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(port, function() {
+app.listen(port, () => {
     console.log('server started at port: ' + port);
 });
