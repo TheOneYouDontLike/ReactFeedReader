@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var mainElement = document.getElementById('main-container');
+let mainElement = document.getElementById('main-container');
 
-var Home = React.createClass({
+let Home = React.createClass({
     render() {
         return (
             <div className="Home">It's working</div>
