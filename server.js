@@ -2,6 +2,7 @@
 
 import express from 'express';
 import bodyParser from 'body-parser';
+import _ from 'lodash';
 import feedReader from './app/feedReader.js';
 
 var app = express(),
@@ -14,9 +15,12 @@ app.use(bodyParser.json());
 
 app.get('/feeds', (req, res) => {
     feedReader.read((error, data) => {
-        let responseData = JSON.stringify(data);
-        res.write(responseData);
-        res.end();
+        let responseData = _.map(data, function(article) {
+            return {
+                title: article.title
+            };
+        });
+        res.send(responseData);
     });
 });
 
