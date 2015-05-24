@@ -4,6 +4,8 @@ import React from 'react';
 import superagent from 'superagent';
 import _ from 'lodash';
 
+import './app.style.css';
+
 let mainElement = document.getElementById('main-container');
 
 let Home = React.createClass({
@@ -39,7 +41,9 @@ let Home = React.createClass({
     render() {
         let articleTitles = _.map(this.state.articles, (article) => {
             return (
-                <div className="row"><span onClick={ this._displayArticle.bind(null, article.title) }>{ article.title }</span></div>
+                <div className="row">
+                    <span className="app-article-link" onClick={ this._displayArticle.bind(null, article.title) }>{ article.title }</span>
+                </div>
             );
         });
 
