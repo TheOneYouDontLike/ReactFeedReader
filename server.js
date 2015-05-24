@@ -12,15 +12,32 @@ var app = express(),
 app.use(bodyParser.json());
 
 // api
-
 app.get('/feeds', (req, res) => {
-    feedReader.read((error, data) => {
-        let responseData = _.map(data, function(article) {
+    feedReader.read((error, articles) => {
+        let responseData = _.map(articles, function(article) {
             return {
                 title: article.title
             };
         });
+
         res.send(responseData);
+    });
+});
+
+app.get('/article/:articleTitle', (req, res) => {
+    feedReader.read((error, articles) => {
+        let articleToDisplay = _(articles)
+            .filter((article) => {
+                return article.title.indexOf(req.params.articleTitle)  > -1;
+            })
+            .map((article) => {
+                return {
+                    content: article.description
+                };
+            })
+            .first();
+
+        res.send(articleToDisplay);
     });
 });
 
