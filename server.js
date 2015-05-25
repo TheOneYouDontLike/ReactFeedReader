@@ -5,15 +5,17 @@ import bodyParser from 'body-parser';
 import _ from 'lodash';
 import feedReader from './app/feedReader.js';
 
-var app = express(),
+let app = express(),
     port = 2222;
 
 // config
 app.use(bodyParser.json());
 
+let feeds = ['http://aimforsimplicity.com/feed.atom'];
+
 // api
 app.get('/feeds', (req, res) => {
-    feedReader.read((error, articles) => {
+    feedReader.read(feeds, (error, articles) => {
         let responseData = _.map(articles, function(article) {
             return {
                 title: article.title
@@ -25,7 +27,7 @@ app.get('/feeds', (req, res) => {
 });
 
 app.get('/article/:articleTitle', (req, res) => {
-    feedReader.read((error, articles) => {
+    feedReader.read(feeds, (error, articles) => {
         let articleToDisplay = _(articles)
             .filter((article) => {
                 return article.title.indexOf(req.params.articleTitle)  > -1;

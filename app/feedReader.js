@@ -7,8 +7,8 @@ var feedReader = {
     read: read
 };
 
-function read(callback) {
-    let req = request('http://aimforsimplicity.com/feed.atom');
+function read(feeds, callback) {
+    let req = request(feeds[0]);
     let feedparser = new FeedParser();
     let items = [];
 
