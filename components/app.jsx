@@ -12,7 +12,13 @@ let Home = React.createClass({
     getInitialState() {
         return {
             articles: [],
-            currentlyDisplayedArticle: {}
+            currentlyDisplayedContent: {
+                content: '',
+                title: '',
+                date: '',
+                author: '',
+                link: 'woof woof'
+            }
         };
     },
 
@@ -30,12 +36,12 @@ let Home = React.createClass({
             .get('/article/' + articleTitle)
             .accept('application/json')
             .end((error, data) => {
-                this.setState({ currentlyDisplayedArticle: data.body });
+                this.setState({ currentlyDisplayedContent: data.body });
             });
     },
 
     _createMarkup() {
-        return { __html: this.state.currentlyDisplayedArticle.content };
+        return { __html: this.state.currentlyDisplayedContent.content };
     },
 
     render() {
@@ -47,12 +53,24 @@ let Home = React.createClass({
             );
         });
 
+        let date = this.state.currentlyDisplayedContent.date ? 'Date: ' + new Date(this.state.currentlyDisplayedContent.date).toString() : null;
+        let author = this.state.currentlyDisplayedContent.author ? 'Author: ' + this.state.currentlyDisplayedContent.author : null;
+
         return (
             <div className="Home container">
                 <div className="row">
                     <div className="menu col-md-4">{ articleTitles }</div>
                     <div className="feeds col-md-8">
-                        <div dangerouslySetInnerHTML={ this._createMarkup() } />
+                        <div className="row">
+                            <div className="col-md-12"><h1>{ this.state.currentlyDisplayedContent.title }</h1></div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">{ date }</div>
+                            <div className="col-md-6">{ author }</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12" dangerouslySetInnerHTML={ this._createMarkup() } />
+                        </div>
                     </div>
                 </div>
             </div>

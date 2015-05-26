@@ -9,7 +9,11 @@ var feedReader = {
 
 function read(feeds, callback) {
     let req = request(feeds[0]);
-    let feedparser = new FeedParser();
+
+    let options = {
+        feedurl: feeds[0]
+    };
+    let feedparser = new FeedParser(options);
     let items = [];
 
     req.on('error', function(error) {

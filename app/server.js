@@ -3,7 +3,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import _ from 'lodash';
-import feedReader from './app/feedReader.js';
+import feedReader from './feedReader.js';
+import fs from 'fs';
+
+function writeToFile(file) {
+    fs.writeFile('debug.json', JSON.stringify(file), (error) => {
+        console.log(error);
+        console.log('written to file');
+    });
+}
 
 let app = express(),
     port = 2222;
@@ -11,14 +19,15 @@ let app = express(),
 // config
 app.use(bodyParser.json());
 
-let feeds = ['http://aimforsimplicity.com/feed.atom'];
+let feeds = ['http://aimforsimplicity.com/feed.atom', 'http://blog.jonathanchannon.com/feed.xml'];
 
 // api
 app.get('/feeds', (req, res) => {
     feedReader.read(feeds, (error, articles) => {
         let responseData = _.map(articles, function(article) {
             return {
-                title: article.title
+                title: article.title,
+                summary: article.summary
             };
         });
 
@@ -28,13 +37,18 @@ app.get('/feeds', (req, res) => {
 
 app.get('/article/:articleTitle', (req, res) => {
     feedReader.read(feeds, (error, articles) => {
+        writeToFile(articles);
         let articleToDisplay = _(articles)
             .filter((article) => {
                 return article.title.indexOf(req.params.articleTitle)  > -1;
             })
             .map((article) => {
                 return {
-                    content: article.description
+                    content: article.description,
+                    title: article.title,
+                    date: article.date,
+                    author: article.author,
+                    link: article.link
                 };
             })
             .first();

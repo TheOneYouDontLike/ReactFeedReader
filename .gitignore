@@ -197,3 +197,5 @@ FakesAssemblies/
 
 public/app.bundle.js
 public/common.js
+debug.json
+app-compiled/*

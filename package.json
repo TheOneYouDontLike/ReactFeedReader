@@ -2,7 +2,7 @@
   "name": "ReactFeedReader",
   "version": "0.0.1",
   "description": "",
-  "main": "server.js",
+  "main": "app/server.js",
   "dependencies": {
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
@@ -22,7 +22,7 @@
     "webpack": "^1.9.7"
   },
   "scripts": {
-    "start": "babel-node --debug server.js"
+    "start": "babel-node --debug ./app/server.js"
   },
   "repository": {
     "type": "git",
