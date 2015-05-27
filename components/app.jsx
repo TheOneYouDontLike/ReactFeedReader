@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import './app.style.css';
 import AddNewFeedButton from './addNewFeedButton';
+import feedsApi from './feedsApi';
 
 let mainElement = document.getElementById('main-container');
 
@@ -24,21 +25,11 @@ let Home = React.createClass({
     },
 
     componentDidMount() {
-        superagent
-            .get('/feeds')
-            .accept('application/json')
-            .end((error, data) => {
-                this.setState({feeds: data.body});
-            });
+        feedsApi.getFeeds((feeds) => this.setState({feeds: feeds}));
     },
 
     _displayArticle(articleTitle) {
-        superagent
-            .get('/article/' + articleTitle)
-            .accept('application/json')
-            .end((error, data) => {
-                this.setState({ currentlyDisplayedContent: data.body });
-            });
+        feedsApi.getArticle(articleTitle, (article) => this.setState({ currentlyDisplayedContent: article }));
     },
 
     _createMarkup() {
@@ -46,21 +37,7 @@ let Home = React.createClass({
     },
 
     _addFeedHandler(feedAddress) {
-        let dataToSend = JSON.stringify({ feedAddress: feedAddress });
-
-        superagent
-            .post('/feed')
-            .send(dataToSend)
-            .set('Content-Type', 'application/json')
-            .accept('application/json')
-            .end((error) => {
-                if(error) {
-                    alert(error);
-                    return;
-                }
-
-                alert('feed added');
-            });
+        feedsApi.addFeed(feedAddress, () => { alert('feed added') });
     },
 
     render() {

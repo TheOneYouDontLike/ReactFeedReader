@@ -58,7 +58,8 @@ app.get('/article/:articleTitle', (req, res) => {
 });
 
 app.post('/feed', (req, res) => {
-    console.log(req.body);
+    feeds.push(req.body.feedAddress);
+    console.log(feeds);
     res.end();
 });
 
