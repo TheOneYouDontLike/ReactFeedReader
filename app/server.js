@@ -57,6 +57,11 @@ app.get('/article/:articleTitle', (req, res) => {
     });
 });
 
+app.post('/feed', (req, res) => {
+    console.log(req.body);
+    res.end();
+});
+
 // VIEWS
 app.use(express.static('public'));
 

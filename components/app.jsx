@@ -5,19 +5,20 @@ import superagent from 'superagent';
 import _ from 'lodash';
 
 import './app.style.css';
+import AddNewFeedButton from './addNewFeedButton';
 
 let mainElement = document.getElementById('main-container');
 
 let Home = React.createClass({
     getInitialState() {
         return {
-            articles: [],
+            feeds: [],
             currentlyDisplayedContent: {
                 content: '',
                 title: '',
                 date: '',
                 author: '',
-                link: 'woof woof'
+                link: ''
             }
         };
     },
@@ -27,7 +28,7 @@ let Home = React.createClass({
             .get('/feeds')
             .accept('application/json')
             .end((error, data) => {
-                this.setState({articles: data.body});
+                this.setState({feeds: data.body});
             });
     },
 
@@ -44,10 +45,28 @@ let Home = React.createClass({
         return { __html: this.state.currentlyDisplayedContent.content };
     },
 
+    _addFeedHandler(feedAddress) {
+        let dataToSend = JSON.stringify({ feedAddress: feedAddress });
+
+        superagent
+            .post('/feed')
+            .send(dataToSend)
+            .set('Content-Type', 'application/json')
+            .accept('application/json')
+            .end((error) => {
+                if(error) {
+                    alert(error);
+                    return;
+                }
+
+                alert('feed added');
+            });
+    },
+
     render() {
-        let articleTitles = _.map(this.state.articles, (article) => {
+        let articleTitles = _.map(this.state.feeds, (article) => {
             return (
-                <div className="row">
+                <div>
                     <span className="app-article-link" onClick={ this._displayArticle.bind(null, article.title) }>{ article.title }</span>
                 </div>
             );
@@ -56,20 +75,25 @@ let Home = React.createClass({
         let date = this.state.currentlyDisplayedContent.date ? 'Date: ' + new Date(this.state.currentlyDisplayedContent.date).toString() : null;
         let author = this.state.currentlyDisplayedContent.author ? 'Author: ' + this.state.currentlyDisplayedContent.author : null;
 
+        let addButton = <AddNewFeedButton addFeedHandler={ this._addFeedHandler } />;
+
         return (
-            <div className="Home container">
+            <div className="Home container-fluid">
                 <div className="row">
-                    <div className="menu col-md-4">{ articleTitles }</div>
+                    <div className="menu col-md-4">
+                        { articleTitles }
+                        { addButton }
+                    </div>
                     <div className="feeds col-md-8">
-                        <div className="row">
-                            <div className="col-md-12"><h1>{ this.state.currentlyDisplayedContent.title }</h1></div>
+                        <div>
+                            <div><h1>{ this.state.currentlyDisplayedContent.title }</h1></div>
                         </div>
-                        <div className="row">
-                            <div className="col-md-6">{ date }</div>
-                            <div className="col-md-6">{ author }</div>
+                        <div>
+                            <div>{ date }</div>
+                            <div>{ author }</div>
                         </div>
-                        <div className="row">
-                            <div className="col-md-12" dangerouslySetInnerHTML={ this._createMarkup() } />
+                        <div>
+                            <div dangerouslySetInnerHTML={ this._createMarkup() } />
                         </div>
                     </div>
                 </div>
