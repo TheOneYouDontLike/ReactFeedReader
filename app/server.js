@@ -15,38 +15,49 @@ function writeToFile(file) {
 }
 
 let app = express(),
-    port = 2222;
+    port = 2222,
+    persistence = new JsonPersistence('feeds.json');
 
 // config
 app.use(bodyParser.json());
 
-let persistence = new JsonPersistence('feeds.json');
-
 /* for debugging only */
-persistence.init((error) => {
-    persistence.addRange(['http://aimforsimplicity.com/feed.atom', 'http://blog.jonathanchannon.com/feed.xml'], (error) => {
-        if (error) {
-            console.log(error);
-            return;
-        }
-    });
-});
+// persistence.init((error) => {
+//     persistence.addRange(['http://aimforsimplicity.com/feed.atom', 'http://blog.jonathanchannon.com/feed.xml'], (error) => {
+//         if (error) {
+//             console.log(error);
+//             return;
+//         }
+//     });
+// });
 
 // api
 app.get('/feeds', (req, res) => {
     let feeds = persistence.getAll((error, feeds) => {
-        feedReader.read(feeds, (error, articles) => {
-            let responseData = _.map(articles, function(article) {
-                return {
-                    title: article.title,
-                    summary: article.summary
-                };
-            });
-
+        feedReader.read(feeds, (error, parsedFeeds) => {
+            let responseData = _mapFeeds(parsedFeeds);
             res.send(responseData);
         });
     });
 });
+
+function _mapFeeds(parsedFeeds) {
+    let responseData = _.map(parsedFeeds, (feed) => {
+        let articles = _.map(feed.articles, (article) => {
+            return {
+                title: article.title,
+                summary: article.summary
+            };
+        });
+
+        return {
+            address: feed.address,
+            articles: articles
+        };
+    });
+
+    return responseData;
+}
 
 app.get('/article/:articleTitle', (req, res) => {
     let feeds = persistence.getAll((error, feeds) => {

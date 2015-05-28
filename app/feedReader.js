@@ -2,19 +2,47 @@
 
 import FeedParser from 'feedparser';
 import request from 'request';
+import _ from 'lodash';
 
 var feedReader = {
     read: read
 };
 
 function read(feeds, callback) {
-    let req = request(feeds[0]);
+    let feedsToRead = feeds.length;
+    let parsedFeeds = [];
+
+    _.forEach(feeds, (feed) => {
+        _parseFeed(feed, (articles) => {
+            let parsedFeed = {
+                address: feed,
+                articles: articles
+            };
+
+            parsedFeeds.push(parsedFeed);
+
+            //console.log(parsedFeeds);
+
+            feedsToRead -= 1;
+            //console.log(feedsToRead);
+
+            if (feedsToRead === 0) {
+                let error = null;
+                callback(error, parsedFeeds);
+            }
+        });
+    });
+}
+
+function _parseFeed(feed, callback) {
+    let req = request(feed);
 
     let options = {
-        feedurl: feeds[0]
+        feedurl: feed
     };
+
     let feedparser = new FeedParser(options);
-    let items = [];
+    let articles = [];
 
     req.on('error', function(error) {
         console.log(error);
@@ -41,13 +69,14 @@ function read(feeds, callback) {
         let item = {};
 
         while (item = stream.read()) {
-            items.push(item);
+            articles.push(item);
         }
     });
 
     feedparser.on('end', function() {
-        callback(null, items);
+        callback(articles);
     });
 }
+
 
 module.exports = feedReader;

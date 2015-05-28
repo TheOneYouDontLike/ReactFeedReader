@@ -25,7 +25,7 @@ let Home = React.createClass({
     },
 
     componentDidMount() {
-        feedsApi.getFeeds((feeds) => this.setState({feeds: feeds}));
+        feedsApi.getFeeds((feeds) => this.setState({feeds: feeds[0].articles}));
     },
 
     _displayArticle(articleTitle) {
