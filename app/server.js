@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import _ from 'lodash';
 import feedReader from './feedReader.js';
 import fs from 'fs';
+import JsonPersistence from './jsonPersistence'
 
 function writeToFile(file) {
     fs.writeFile('debug.json', JSON.stringify(file), (error) => {
@@ -19,47 +20,62 @@ let app = express(),
 // config
 app.use(bodyParser.json());
 
-let feeds = ['http://aimforsimplicity.com/feed.atom', 'http://blog.jonathanchannon.com/feed.xml'];
+let persistence = new JsonPersistence('feeds.json');
+
+/* for debugging only */
+persistence.init((error) => {
+    persistence.addRange(['http://aimforsimplicity.com/feed.atom', 'http://blog.jonathanchannon.com/feed.xml'], (error) => {
+        if (error) {
+            console.log(error);
+            return;
+        }
+    });
+});
 
 // api
 app.get('/feeds', (req, res) => {
-    feedReader.read(feeds, (error, articles) => {
-        let responseData = _.map(articles, function(article) {
-            return {
-                title: article.title,
-                summary: article.summary
-            };
-        });
+    let feeds = persistence.getAll((error, feeds) => {
+        feedReader.read(feeds, (error, articles) => {
+            let responseData = _.map(articles, function(article) {
+                return {
+                    title: article.title,
+                    summary: article.summary
+                };
+            });
 
-        res.send(responseData);
+            res.send(responseData);
+        });
     });
 });
 
 app.get('/article/:articleTitle', (req, res) => {
-    feedReader.read(feeds, (error, articles) => {
-        writeToFile(articles);
-        let articleToDisplay = _(articles)
-            .filter((article) => {
-                return article.title.indexOf(req.params.articleTitle)  > -1;
-            })
-            .map((article) => {
-                return {
-                    content: article.description,
-                    title: article.title,
-                    date: article.date,
-                    author: article.author,
-                    link: article.link
-                };
-            })
-            .first();
+    let feeds = persistence.getAll((error, feeds) => {
+        feedReader.read(feeds, (error, articles) => {
+            let articleToDisplay = _(articles)
+                .filter((article) => {
+                    return article.title.indexOf(req.params.articleTitle)  > -1;
+                })
+                .map((article) => {
+                    return {
+                        content: article.description,
+                        title: article.title,
+                        date: article.date,
+                        author: article.author,
+                        link: article.link
+                    };
+                })
+                .first();
 
-        res.send(articleToDisplay);
+            res.send(articleToDisplay);
+        });
     });
 });
 
 app.post('/feed', (req, res) => {
-    feeds.push(req.body.feedAddress);
-    console.log(feeds);
+    persistence.add(req.body.feedAddress, () => {
+        console.log('new feed added');
+    });
+
     res.end();
 });
 
