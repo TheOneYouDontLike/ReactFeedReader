@@ -19,7 +19,7 @@ let Home = React.createClass({
     getInitialState() {
         return {
             feeds: [],
-            displayedArtiles: [],
+            displayedArticles: [],
             currentlyDisplayedContent: {
                 content: '',
                 title: '',
@@ -35,22 +35,17 @@ let Home = React.createClass({
     },
 
     _displayFeedArticles(feedAddress) {
-        console.log(feedAddress);
-        console.log(this.state.feeds);
-        let articles = _(this.state.feeds)
-        .map((feed) => {
-            if (feed.address.indexOf(feedAddress) > -1) {
-                return feed.articles;
-            }
-        })
-        .first();
+        let matchingFeed = _.find(this.state.feeds, (feed) => {
+            return feed.address.indexOf(feedAddress) > -1;
+        });
 
-        console.log(articles);
-        this.setState({ displayedArtiles: articles });
+        this.setState({ displayedArticles: matchingFeed.articles });
     },
 
     _displayArticle(articleTitle) {
-        feedsApi.getArticle(contentPath, (article) => this.setState({ currentlyDisplayedContent: article }));
+        this.setState({ displayedArticles: [] });
+        console.log(articleTitle);
+        feedsApi.getArticle(articleTitle, (article) => this.setState({ currentlyDisplayedContent: article }));
     },
 
     _createMarkup() {
@@ -88,7 +83,7 @@ let Home = React.createClass({
 
         let addButton = <AddNewFeedButton addFeedHandler={ this._addFeedHandler } />;
 
-        let artilesTitlesToDisplay = _.map(this.state.displayedArtiles, (article) => {
+        let artilesTitlesToDisplay = _.map(this.state.displayedArticles, (article) => {
             return <div className="app-article-link" onClick={ this._displayArticle.bind(null, article.title) }> { article.title } </div>;
         });
 
