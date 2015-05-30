@@ -62,9 +62,13 @@ function _mapFeeds(parsedFeeds) {
 // TODO: this part doesn't work
 app.get('/article/:articleTitle', (req, res) => {
     let feeds = persistence.getAll((error, feeds) => {
-        feedReader.read(feeds, (error, articles) => {
+        feedReader.read(feeds, (error, feeds) => {
 
-            let articleToDisplay = _(articles)
+            let articleToDisplay = _(feeds)
+                .map((feed) => {
+                    return feed.articles;
+                })
+                .flatten()
                 .filter((article) => {
                     return article.title.indexOf(req.params.articleTitle)  > -1;
                 })

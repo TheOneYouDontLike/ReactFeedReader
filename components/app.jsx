@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import superagent from 'superagent';
 import _ from 'lodash';
 
 import './app.style.css';
@@ -10,23 +9,12 @@ import feedsApi from './feedsApi';
 
 let mainElement = document.getElementById('main-container');
 
-let contentType = {
-    FEED: 'feed',
-    ARTICLE: 'article'
-};
-
 let Home = React.createClass({
     getInitialState() {
         return {
             feeds: [],
             displayedArticles: [],
-            currentlyDisplayedContent: {
-                content: '',
-                title: '',
-                date: '',
-                author: '',
-                link: ''
-            }
+            currentlyDisplayedContent: {}
         };
     },
 
@@ -43,9 +31,16 @@ let Home = React.createClass({
     },
 
     _displayArticle(articleTitle) {
+        this._resetState();
+
+        feedsApi.getArticle(articleTitle, (article) => {
+            this.setState({ currentlyDisplayedContent: article });
+        });
+    },
+
+    _resetState() {
         this.setState({ displayedArticles: [] });
-        console.log(articleTitle);
-        feedsApi.getArticle(articleTitle, (article) => this.setState({ currentlyDisplayedContent: article }));
+        this.setState({ currentlyDisplayedContent: {} });
     },
 
     _createMarkup() {
@@ -53,7 +48,7 @@ let Home = React.createClass({
     },
 
     _addFeedHandler(feedAddress) {
-        feedsApi.addFeed(feedAddress, () => { alert('feed added') });
+        feedsApi.addFeed(feedAddress, () => { alert('feed added'); });
     },
 
     render() {
@@ -87,7 +82,7 @@ let Home = React.createClass({
             return <div className="app-article-link" onClick={ this._displayArticle.bind(null, article.title) }> { article.title } </div>;
         });
 
-        let contentToDisplay = artilesTitlesToDisplay ? artilesTitlesToDisplay : singleArticle;
+        let contentToDisplay = artilesTitlesToDisplay.length > 0 ? artilesTitlesToDisplay : singleArticle;
 
         return (
             <div className="Home container-fluid">
