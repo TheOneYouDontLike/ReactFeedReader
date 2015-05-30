@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import './app.style.css';
 import AddNewFeedButton from './addNewFeedButton';
+import FeedAddress from './feedAddress';
 import feedsApi from './feedsApi';
 
 let mainElement = document.getElementById('main-container');
@@ -53,17 +54,14 @@ let Home = React.createClass({
 
     render() {
         let feedAddresses = _.map(this.state.feeds, (feed) => {
-            return (
-                <div>
-                    <span className="app-article-link" onClick={ this._displayFeedArticles.bind(null, feed.address) }>{ feed.address }</span>
-                </div>
-            );
+            return <FeedAddress addressClickedHandler={ this._displayFeedArticles} feedAddress={ feed.address } key={ feed.address } />;
         });
 
         let date = this.state.currentlyDisplayedContent.date ? 'Date: ' + new Date(this.state.currentlyDisplayedContent.date).toString() : null;
         let author = this.state.currentlyDisplayedContent.author ? 'Author: ' + this.state.currentlyDisplayedContent.author : null;
 
-        let singleArticle = <div>
+        let singleArticle =
+            <div>
                 <div>
                     <div><h1>{ this.state.currentlyDisplayedContent.title }</h1></div>
                 </div>
