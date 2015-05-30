@@ -20,11 +20,7 @@ function read(feeds, callback) {
             };
 
             parsedFeeds.push(parsedFeed);
-
-            //console.log(parsedFeeds);
-
             feedsToRead -= 1;
-            //console.log(feedsToRead);
 
             if (feedsToRead === 0) {
                 let error = null;

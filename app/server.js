@@ -59,7 +59,6 @@ function _mapFeeds(parsedFeeds) {
     return responseData;
 }
 
-// TODO: this part doesn't work
 app.get('/article/:articleTitle', (req, res) => {
     let feeds = persistence.getAll((error, feeds) => {
         feedReader.read(feeds, (error, feeds) => {
