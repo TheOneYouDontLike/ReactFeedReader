@@ -9,7 +9,7 @@ let FeedAddress = React.createClass({
 
     render() {
         return (
-            <div className="app-article-link" onClick={ this._addressClicked }>{ this.props.feedAddress }</div>
+            <div className="FeedAddress app-article-link" onClick={ this._addressClicked }>{ this.props.feedAddress }</div>
         );
     }
 });

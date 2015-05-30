@@ -6,6 +6,8 @@ import _ from 'lodash';
 import './app.style.css';
 import AddNewFeedButton from './addNewFeedButton';
 import FeedAddress from './feedAddress';
+import Article from './article';
+import ArticleTitle from './articleTitle';
 import feedsApi from './feedsApi';
 
 let mainElement = document.getElementById('main-container');
@@ -44,10 +46,6 @@ let Home = React.createClass({
         this.setState({ currentlyDisplayedContent: {} });
     },
 
-    _createMarkup() {
-        return { __html: this.state.currentlyDisplayedContent.content };
-    },
-
     _addFeedHandler(feedAddress) {
         feedsApi.addFeed(feedAddress, () => { alert('feed added'); });
     },
@@ -55,30 +53,15 @@ let Home = React.createClass({
     render() {
         let feedAddresses = _.map(this.state.feeds, (feed) => {
             return <FeedAddress addressClickedHandler={ this._displayFeedArticles} feedAddress={ feed.address } key={ feed.address } />;
-        });
-
-        let date = this.state.currentlyDisplayedContent.date ? 'Date: ' + new Date(this.state.currentlyDisplayedContent.date).toString() : null;
-        let author = this.state.currentlyDisplayedContent.author ? 'Author: ' + this.state.currentlyDisplayedContent.author : null;
-
-        let singleArticle =
-            <div>
-                <div>
-                    <div><h1>{ this.state.currentlyDisplayedContent.title }</h1></div>
-                </div>
-                <div>
-                    <div>{ date }</div>
-                    <div>{ author }</div>
-                </div>
-                <div>
-                    <div dangerouslySetInnerHTML={ this._createMarkup() } />
-                </div>
-            </div>;
+        }, this);
 
         let addButton = <AddNewFeedButton addFeedHandler={ this._addFeedHandler } />;
 
         let artilesTitlesToDisplay = _.map(this.state.displayedArticles, (article) => {
-            return <div className="app-article-link" onClick={ this._displayArticle.bind(null, article.title) }> { article.title } </div>;
-        });
+            return <ArticleTitle titleClickedHandler={ this._displayArticle } articleTitle={ article.title } key={ article.title } />;
+        }, this);
+
+        let singleArticle = <Article article={ this.state.currentlyDisplayedContent } />;
 
         let contentToDisplay = artilesTitlesToDisplay.length > 0 ? artilesTitlesToDisplay : singleArticle;
 
