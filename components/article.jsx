@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import './article.style.css';
+
 let Article = React.createClass({
     _createMarkup() {
         return { __html: this.props.article.content };
@@ -12,7 +14,7 @@ let Article = React.createClass({
         let author = this.props.article.author ? 'Author: ' + this.props.article.author : null;
 
         return (
-            <div>
+            <div className="Article">
                 <div>
                     <div><h1>{ this.props.article.title }</h1></div>
                 </div>
