@@ -13,7 +13,7 @@ let Article = React.createClass({
         let date = this.props.article.date ? 'Date: ' + new Date(this.props.article.date).toString() : null;
         let author = this.props.article.author ? 'Author: ' + this.props.article.author : null;
 
-        return (
+        let articleContent =
             <div className="Article">
                 <div>
                     <div><h1>{ this.props.article.title }</h1></div>
@@ -25,8 +25,14 @@ let Article = React.createClass({
                 <div>
                     <div dangerouslySetInnerHTML={ this._createMarkup() } />
                 </div>
-            </div>
-        );
+            </div>;
+
+        let spinner =
+            <div className="bg-info">
+                <p><span className="glyphicon glyphicon-time"></span> Loading...</p>
+            </div>;
+
+        return this.props.article.content ? articleContent : spinner;
     }
 });
 

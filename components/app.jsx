@@ -57,13 +57,13 @@ let Home = React.createClass({
 
         let addButton = <AddNewFeedButton addFeedHandler={ this._addFeedHandler } />;
 
-        let artilesTitlesToDisplay = _.map(this.state.displayedArticles, (article) => {
+        let articlesTitlesToDisplay = _.map(this.state.displayedArticles, (article) => {
             return <ArticleTitle titleClickedHandler={ this._displayArticle } articleTitle={ article.title } key={ article.title } />;
         }, this);
 
         let singleArticle = <Article article={ this.state.currentlyDisplayedContent } />;
 
-        let contentToDisplay = artilesTitlesToDisplay.length > 0 ? artilesTitlesToDisplay : singleArticle;
+        let contentToDisplay = articlesTitlesToDisplay.length > 0 ? articlesTitlesToDisplay : singleArticle;
 
         return (
             <div className="Home container-fluid">
