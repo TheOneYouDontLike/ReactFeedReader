@@ -1,5 +1,23 @@
+body {
+    background-color: #336E7B;
+}
+
 .app-article-link {
     font-weight: bold;
     cursor: pointer;
     line-height: 26px;
+}
+
+.menu {
+    color: #fff;
+    padding: 10px;
+}
+
+.feed-addresses {
+    padding: 10px;
+}
+
+.feeds {
+    background-color: #fff;
+    padding: 10px;
 }

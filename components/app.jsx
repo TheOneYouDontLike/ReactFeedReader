@@ -69,8 +69,10 @@ let Home = React.createClass({
             <div className="Home container-fluid">
                 <div className="row">
                     <div className="menu col-md-4">
-                        { feedAddresses }
                         { addButton }
+                        <div className="feed-addresses">
+                            { feedAddresses }
+                        </div>
                     </div>
                     <div className="feeds col-md-8">
                         { contentToDisplay }
