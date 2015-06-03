@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import _ from 'lodash';
 import feedReader from './feedReader.js';
 import fs from 'fs';
-import JsonPersistence from './jsonPersistence'
+import JsonPersistence from 'JsonPersistence'
 
 function writeToFile(file) {
     fs.writeFile('debug.json', JSON.stringify(file), (error) => {

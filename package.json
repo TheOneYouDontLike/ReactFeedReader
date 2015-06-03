@@ -4,6 +4,7 @@
   "description": "",
   "main": "app/server.js",
   "dependencies": {
+    "JsonPersistence": "git://github.com/TheOneYouDontLike/JsonPersistence.git",
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
     "feedparser": "^1.1.0",
